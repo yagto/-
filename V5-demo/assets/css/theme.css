@@ -1,0 +1,120 @@
+/* ============================================================
+   theme.css — 全站唯一的配色与尺寸来源
+   ------------------------------------------------------------
+   ★ 想换配色，只改这个文件，其他地方一个字都不用动。
+
+   设计取向（很重要，别改回去）：
+     · 浅色为主。深色底 + 霓虹渐变发光是 V1 被否掉的东西。
+     · 单一色相：天蓝。不堆第二种强调色 —— 颜色一多就变"AI 味"。
+     · 不用发光（box-shadow 的彩色扩散）、不用渐变文字、
+       不用深色玻璃拟态。要"简约、活跃"，靠留白和字号层级，
+       不靠特效。
+     · "活跃"来自明亮的天蓝和圆润的形状，不是来自多彩。
+   ============================================================ */
+
+:root {
+  /* ---------- 底色 ---------- */
+  --c-bg:           #ffffff;
+  --c-bg-soft:      #f8fafc;   /* 交替区块的浅底，用来区隔屏与屏 */
+  --c-surface:      #ffffff;
+  --c-surface-alt:  #f1f5f9;
+
+  /* ---------- 文字 ----------
+     三档灰阶，对白底的对比度都过 AA：
+       --c-text      约 17.4:1
+       --c-text-soft  约 7.5:1
+       --c-text-mute  约 4.8:1
+     正文一律用前两档，--c-text-mute 只给辅助说明用。 */
+  --c-text:         #0f172a;
+  --c-text-soft:    #475569;
+  --c-text-mute:    #64748b;
+
+  /* ---------- 线条 ---------- */
+  --c-line:         #e2e8f0;
+  --c-line-soft:    #f1f5f9;
+  --c-line-strong:  #cbd5e1;
+
+  /* ---------- 天蓝主色 ----------
+     ★ 两个"深"的天蓝是分工的，不要混用：
+       --c-primary       用于大字号、图标、边框、色块（约 4.0:1）
+       --c-primary-ink   用于正文里的链接和小字（约 5.9:1，过 AA）
+     浅色主题下最常见的错误，就是拿亮天蓝当正文色 —— 看着好看，
+     实际读不清。 */
+  --c-primary:        #0284c7;
+  --c-primary-ink:    #0369a1;
+  --c-primary-bright: #38bdf8;
+  --c-primary-soft:   #e0f2fe;
+  --c-primary-line:   #bae6fd;
+
+  /* ---------- 语义色（克制使用） ---------- */
+  --c-ok:           #059669;
+  --c-warn:         #b45309;
+  --c-warn-soft:    #fef3c7;
+
+  /* ---------- 间距 ----------
+     浅色简约风靠留白撑气场，所以基准比 V1 略大 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+
+  /* ---------- 圆角 ----------
+     圆润一点会显得"活跃"，但不做成胶囊，那又"AI"了 */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 16px;
+
+  /* ---------- 动效 ----------
+     保留分屏吸附和上滑转场，但节奏压慢、幅度压小。
+     V1 那种"到处都在动"是 AI 味的来源之一。 */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --ease:     cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* ---------- 字号 ----------
+     层级靠尺寸和字重拉开，不靠颜色和特效。
+     正文地板 16px。 */
+  --fs-body:  clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --fs-sm:    0.9375rem;
+  --fs-xs:    0.8125rem;
+  --fs-h1:    clamp(2rem, 1.4rem + 3vw, 3.5rem);
+  --fs-h2:    clamp(1.5rem, 1.25rem + 1.2vw, 2.125rem);
+  --fs-h3:    clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --fs-lead:  clamp(1.0625rem, 1rem + 0.5vw, 1.25rem);
+
+  --lh-tight: 1.2;
+  --lh-base:  1.7;
+
+  /* ---------- 字体 ---------- */
+  --font-sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei",
+               "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --font-num:  "Segoe UI", system-ui, sans-serif;
+
+  /* ---------- 尺寸 ---------- */
+  --hit:         44px;     /* 最小可点区域 */
+  --content-max: 1080px;
+
+  --z-progress: 60;
+  --z-dots:     55;
+  --z-ball:     70;
+  --z-panel:    80;
+  --z-toast:    90;
+  /* 截图弹层是模态，要盖住包括 toast 在内的一切 */
+  --z-gallery:  95;
+}
+
+/* 系统开了"减少动态效果"就整体静下来。
+   这是自动降级的第一条通路，不依赖 JS。 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+  }
+}

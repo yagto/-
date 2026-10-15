@@ -1,0 +1,491 @@
+/* ============================================================
+   components.css — 按钮 / 进度 / 圆点 / 面板 / 提示条
+   ------------------------------------------------------------
+   全线规则：不用发光、不用渐变文字、不用毛玻璃。
+   阴影只用中性灰的低透明度投影，且只在"确实浮起来"的元素上用。
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   顶部进度条
+   transform: scaleX 驱动 —— 不触发布局，稳 60fps
+   ------------------------------------------------------------ */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: var(--z-progress);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease);
+}
+html.js-ready .progress { opacity: 1; }
+
+.progress__bar {
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--c-primary);
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------
+   右侧章节圆点
+   ------------------------------------------------------------ */
+.snap-dots {
+  position: fixed;
+  right: var(--sp-5);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-dots);
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+@media (min-width: 1120px) and (min-height: 640px) { .snap-dots { display: flex; } }
+html.snap-off .snap-dots,
+html.mode-plain .snap-dots { display: none; }
+
+.snap-dot {
+  position: relative;
+  width: 9px; height: 9px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--c-line-strong);
+  transition: background var(--dur-base) var(--ease),
+              transform var(--dur-base) var(--ease);
+}
+/* 视觉 9px，命中区撑到 44px */
+.snap-dot::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+}
+.snap-dot:hover { background: var(--c-text-mute); }
+.snap-dot[aria-current="true"] {
+  background: var(--c-primary);
+  transform: scale(1.45);
+}
+
+/* ------------------------------------------------------------
+   精简模式开关
+   ------------------------------------------------------------ */
+.mode-toggle {
+  position: fixed;
+  top: var(--sp-4);
+  right: var(--sp-4);
+  z-index: var(--z-progress);
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--fs-xs);
+  color: var(--c-text-mute);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease),
+              color var(--dur-base) var(--ease),
+              border-color var(--dur-base) var(--ease);
+}
+html.js-ready .mode-toggle { opacity: 1; pointer-events: auto; }
+.mode-toggle:hover { color: var(--c-text); border-color: var(--c-line-strong); }
+.mode-toggle[aria-pressed="true"] {
+  color: var(--c-primary-ink);
+  border-color: var(--c-primary);
+  background: var(--c-primary-soft);
+}
+@media (min-width: 1120px) {
+  .mode-toggle { right: calc(var(--sp-5) + 32px); }
+}
+
+/* ------------------------------------------------------------
+   按钮
+   ------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--hit);
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface);
+  color: var(--c-text);
+  transition: border-color var(--dur-base) var(--ease),
+              background var(--dur-base) var(--ease);
+}
+.btn:hover { border-color: var(--c-primary); background: var(--c-primary-soft); }
+
+.btn--primary {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: var(--c-primary-ink);
+  border-color: var(--c-primary-ink);
+}
+
+/* ------------------------------------------------------------
+   AI 分身：悬浮球
+   ------------------------------------------------------------ */
+.avatar-ball {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-ball);
+  display: grid;
+  place-items: center;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: #fff;
+  /* 中性灰投影，不是彩色发光 */
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.18);
+  transition: transform var(--dur-base) var(--ease),
+              background var(--dur-base) var(--ease);
+  opacity: 0;
+  pointer-events: none;
+}
+html.js-ready .avatar-ball { opacity: 1; pointer-events: auto; }
+.avatar-ball:hover { transform: scale(1.05); background: var(--c-primary-ink); }
+
+/* 内嵌 SVG 图标，替代 V1 的 emoji */
+.avatar-ball svg { width: 26px; height: 26px; }
+
+/* ------------------------------------------------------------
+   AI 分身：半屏面板
+   ------------------------------------------------------------ */
+.avatar-panel {
+  position: fixed;
+  top: 0; right: 0;
+  z-index: var(--z-panel);
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  max-width: 100vw;
+  height: 100dvh;
+  background: var(--c-bg);
+  border-left: 1px solid var(--c-line);
+  box-shadow: -12px 0 40px rgba(15, 23, 42, 0.12);
+  transform: translateX(100%);
+  transition: transform var(--dur-slow) var(--ease);
+  /* 面板自身脱离文档流，内部滚动不带动整页 */
+  overscroll-behavior: contain;
+}
+.avatar-panel[data-open="true"] { transform: translateX(0); }
+
+.avatar-panel__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--c-line);
+  flex-shrink: 0;
+}
+.avatar-panel__title { font-size: var(--fs-h3); }
+.avatar-panel__sub {
+  font-size: var(--fs-xs);
+  color: var(--c-text-mute);
+}
+.avatar-panel__close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: var(--hit); height: var(--hit);
+  border-radius: var(--radius-sm);
+  color: var(--c-text-mute);
+  font-size: 1.25rem;
+}
+.avatar-panel__close:hover { color: var(--c-text); background: var(--c-surface-alt); }
+
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  background: var(--c-bg-soft);
+}
+
+.chat-msg {
+  max-width: 88%;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.chat-msg--bot {
+  align-self: flex-start;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg--user {
+  align-self: flex-end;
+  background: var(--c-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+/* 等待气泡：三点 + 一行文字（"正在理解问题…" / "正在生成回答…"）。
+   用 flex 让三点和文字对齐，不然三点会被 line-height 顶歪。 */
+.chat-msg--pending {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--c-text-mute);
+}
+.chat-msg--hint { color: var(--c-text-mute); }
+
+/* 流式输出时的光标：跟着最后一个字走，打完就撤掉 */
+.chat-msg--bot.is-streaming::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: caret-blink 1s step-end infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-msg--bot.is-streaming::after { animation: none; }
+}
+/* 精简模式下不做逐字，光标也就不该出现 */
+html.mode-plain .chat-msg--bot.is-streaming::after { display: none; }
+
+/* .quick-qs / .quick-q 的样式已删除：
+   快捷问题面板去掉了（手机上占一整行、显挤），
+   示例问题改为写进问候语，不再需要这两个类。 */
+
+.chat-form {
+  display: flex;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--c-line);
+  flex-shrink: 0;
+}
+.chat-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--hit);
+  padding: var(--sp-3) var(--sp-4);
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--radius);
+}
+.chat-form input::placeholder { color: var(--c-text-mute); }
+.chat-form input:focus-visible { border-color: var(--c-primary); }
+
+/* 面板底部的诚实标注 —— 它是加分项，别删 */
+.chat-note {
+  padding: 0 var(--sp-5) var(--sp-3);
+  font-size: 0.75rem;
+  color: var(--c-text-mute);
+  text-align: center;
+  flex-shrink: 0;
+  background: var(--c-bg);
+}
+
+/* 移动端：底部 70vh 上滑 */
+@media (max-width: 600px) {
+  .avatar-panel {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 70dvh;
+    border-left: 0;
+    border-top: 1px solid var(--c-line);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transform: translateY(100%);
+  }
+  .avatar-panel[data-open="true"] { transform: translateY(0); }
+  .chat-form input { font-size: 16px; }  /* 防止 iOS 聚焦时自动放大 */
+}
+
+/* ------------------------------------------------------------
+   提示条
+   ------------------------------------------------------------ */
+.toast-stack {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: calc(var(--sp-5) + 68px + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  .toast-stack {
+    top: calc(var(--sp-4) + env(safe-area-inset-top, 0px));
+    right: var(--sp-4);
+    bottom: auto;
+    left: var(--sp-4);
+    align-items: stretch;
+  }
+}
+
+.toast {
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-strong);
+  border-left: 3px solid var(--c-primary);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  pointer-events: auto;
+  animation: toast-in var(--dur-base) var(--ease);
+}
+.toast--out { animation: toast-out var(--dur-base) var(--ease) forwards; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+  .toast--out { opacity: 0; }
+}
+
+.is-copied { border-color: var(--c-ok) !important; background: #ecfdf5; }
+
+/* 加载中的三点 */
+.dots { display: inline-flex; gap: 4px; }
+.dots i {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+.dots i:nth-child(2) { animation-delay: 0.15s; }
+.dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot-pulse {
+  0%, 60%, 100% { opacity: 0.3; }
+  30%           { opacity: 1; }
+}
+
+/* ------------------------------------------------------------
+   项目截图弹层
+   ------------------------------------------------------------
+   ★ 图片竖向排列、弹层内部滚动 —— 比做左右翻页简单得多，
+     手机转屏、触控板横滑都不会出岔子，也不用管第几张。
+   ★ 打开时给 <html> 挂 .gallery-open 锁住页面滚动。
+     不锁的话，分屏吸附下弹层滚到底会带着整页一起动，很晕。
+   ★ z 用 --z-gallery，比 toast 还高 —— 它是模态，要盖住一切。
+   ------------------------------------------------------------ */
+.gallery {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-gallery);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-5);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease);
+}
+.gallery.is-on { opacity: 1; }
+
+/* ★ 这条不能删，删了整页都点不动。
+   [hidden] 的 display:none 来自浏览器默认样式表，优先级最低，
+   会被上面那条 .gallery { display: flex } 盖掉 —— 于是"隐藏"的弹层
+   照样铺满全屏、吃掉所有点击（opacity: 0 只是看不见，不是不挡道）。
+   作者样式想尊重 hidden 属性，必须自己补这一条。 */
+.gallery[hidden] { display: none; }
+
+html.gallery-open { overflow: hidden; }
+
+.gallery__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.gallery__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 100%;
+  background: var(--c-bg);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+  overflow: hidden;
+}
+
+.gallery__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--c-line);
+  flex-shrink: 0;
+}
+.gallery__title { font-size: var(--fs-h3); color: var(--c-text); }
+
+.gallery__close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: var(--hit); height: var(--hit);
+  border-radius: var(--radius-sm);
+  color: var(--c-text-mute);
+  font-size: 1.25rem;
+}
+.gallery__close:hover { color: var(--c-text); background: var(--c-surface-alt); }
+
+.gallery__list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-5);
+  display: grid;
+  gap: var(--sp-5);
+}
+.gallery__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+
+/* 手机端铺满整屏：截图本来就小，再套一圈边框和留白就没法看了 */
+@media (max-width: 600px) {
+  .gallery { padding: 0; }
+  .gallery__panel {
+    max-width: none;
+    height: 100%;
+    max-height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+  .gallery__list { padding: var(--sp-4); gap: var(--sp-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery { transition: none; }
+}

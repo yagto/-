@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>示例用户 · 计算机科学与技术 · 2027 届</title>
+<meta name="description" content="示例用户的交互式简历。">
+
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+<link rel="stylesheet" href="assets/css/components.css">
+
+<!-- ============================================================
+     脚本加载顺序是有依赖的，别调换：
+       core      工具 / 状态 / 提示条   （其他都依赖它）
+       config    开关 + API 密钥
+       persona   AI 的底料（你的个人资料，系统提示词）
+       ai        匹配器 + 网关
+       qa        本地问答库（安全网，模型挂了才用）
+       avatar    AI 分身（依赖 ai / qa / persona）
+       panels    关于我的四个浮动面板
+       gallery   项目截图弹层
+       sections  分屏吸附 / 转场 / 揭示动画
+       main      装配入口（必须最后）
+
+     全部用 defer：等 DOM 解析完再按顺序执行。
+     这样双击打开也能跑 —— 不需要服务器，不需要打包。
+     ============================================================ -->
+<script defer src="assets/js/core.js"></script>
+<script defer src="assets/js/config.js"></script>
+<script defer src="content/persona.js"></script>
+<script defer src="assets/js/ai.js"></script>
+<script defer src="content/qa.js"></script>
+<script defer src="assets/js/avatar.js"></script>
+<script defer src="assets/js/panels.js"></script>
+<script defer src="assets/js/gallery.js"></script>
+<script defer src="assets/js/sections.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+
+<body>
+<a class="skip-link" href="#identity">跳到主内容</a>
+
+<div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+<nav class="snap-dots" aria-label="章节导航"></nav>
+
+<button id="mode-toggle" class="mode-toggle" type="button" aria-pressed="false">
+  精简模式 · 只看内容
+</button>
+
+<main id="main">
+
+  <!-- ============================================================
+       第 1 屏 · 身份卡
+       ------------------------------------------------------------
+       ★ 这一屏的信息密度是重点 —— 上一版太薄了。
+         · 姓名 + 身份标签行
+         · 一句话价值（左边那条天蓝竖线是整页第一个视觉重音）
+         · 三个关键数字
+         · 右侧速查面板：短标签，一眼扫完
+
+       TODO 等你给信息清单后，这一屏的文案整体替换。
+            结构不用动，改文字即可。
+       ============================================================ -->
+  <section id="identity" class="section" data-label="身份卡" aria-labelledby="identity-title">
+    <div class="section__inner section__inner--narrow">
+
+      <!-- 姓名区与照片并排。
+           ★ 照片放右侧、和文字块同一行，是为了不增加这一屏的高度 ——
+             文字块本来就比照片高，照片并排进来等于白拿。 -->
+      <div class="hero__top">
+        <div class="hero__body">
+          <p class="section__eyebrow reveal">身份卡</p>
+
+          <h1 id="identity-title" class="hero__name reveal">示例用户</h1>
+
+          <p class="hero__edu reveal">湛江科技学院 · 计算机科学与技术 · 本科</p>
+
+          <div class="hero__meta reveal">
+            <span>2027 届</span>
+            <span>23 岁</span>
+            <span>男</span>
+            <span>汉族</span>
+            <span>群众</span>
+            <span>前端为主</span>
+          </div>
+
+          <div class="hero__meta hero__meta--facts reveal">
+            <span>户籍 广东深圳</span>
+            <span>意向城市 中山</span>
+          </div>
+        </div>
+
+        <figure class="hero__photo reveal">
+          <img src="assets/img/portrait.jpg" alt="示例用户的照片" width="289" height="322">
+        </figure>
+      </div>
+
+      <p class="hero__pitch reveal">
+        擅长用 AI 构建工作流、减少重复劳动。自学 Godot 一年，独立做出完整游戏；
+        拥有较强的学习能力和创新思维，擅长配合 AI 工作流快速完成工作内容。
+      </p>
+
+      <div class="stats">
+        <div class="stat reveal">
+          <div class="stat__num"><span data-count-to="1">1</span><span class="stat__unit">年</span></div>
+          <div class="stat__label">自学游戏开发</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat__num"><span data-count-to="3">3</span><span class="stat__unit">周</span></div>
+          <div class="stat__label">从零开始自学用 AI 搭起开发工作流</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat__num"><span data-count-to="1">1</span><span class="stat__unit">个</span></div>
+          <div class="stat__label">正在做的完整项目</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 2 屏 · 关于我
+       ------------------------------------------------------------
+       原本挤在身份卡右侧的四组面板，现在单独成屏。
+       身份卡因此变轻，这一屏也能把内容铺开。
+       ============================================================ -->
+  <section id="about" class="section" data-label="关于我" aria-labelledby="about-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">关于我</p>
+        <h2 id="about-title" class="section__title reveal">关于我</h2>
+        <p class="section__lead reveal">擅长什么、在补什么、在做什么、怎么做事。<br>
+          <span style="font-size:var(--fs-sm);color:var(--c-text-mute)">点击区块可以查看详情。</span>
+        </p>
+      </div>
+
+      <!-- 四个浮动面板：静止只显示标题；点开后标题缩到左上角，详情淡入 -->
+      <div class="panels">
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">擅长的事</span>
+          <span class="panel__list">
+            <span class="panel__item">学习新的内容</span>
+            <span class="panel__item">将 AI 智能融入工作</span>
+            <span class="panel__item">做创新型产品</span>
+          </span>
+        </button>
+
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">当前能力</span>
+          <span class="panel__list">
+            <span class="panel__item">能够独立完成小型项目开发</span>
+            <span class="panel__item">熟悉 C / Java / Python 等主流编程语言</span>
+            <span class="panel__item">熟悉 AI 工作流和 Agent 智能体的应用</span>
+          </span>
+        </button>
+
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">自我评价</span>
+          <span class="panel__list">
+            <span class="panel__item">心态乐观积极</span>
+            <span class="panel__item">具备职场抗压能力</span>
+            <span class="panel__item">具备一定的组织能力</span>
+          </span>
+        </button>
+
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">做事方式</span>
+          <span class="panel__list">
+            <span class="panel__item">先计划再动手</span>
+            <span class="panel__item">工具帮助工作提高效率</span>
+            <span class="panel__item">先做框架，再做内容</span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 3 屏 · 做过什么（项目）
+       ------------------------------------------------------------
+       原本项目 / 实习 / 在校 三块挤在一屏里。手机上这一屏有 895px，
+       是整站最高的一屏，逼得所有屏一起缩到 0.7 —— 正文掉到 11px。
+
+       拆成两屏后，每屏都短了，缩放系数自然抬上来。
+       ★ 顺序是「项目在前」：这是最想让 HR 看到的东西。
+       ============================================================ -->
+  <section id="projects" class="section" data-label="做过什么" aria-labelledby="projects-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">经历</p>
+        <h2 id="projects-title" class="section__title reveal">做过什么</h2>
+        <p class="section__lead reveal">四个从零开始、自己动手做完的东西。</p>
+      </div>
+
+      <div class="exp">
+        <div class="exp__col reveal">
+          <h3 class="exp__title">项目经历</h3>
+          <ul class="exp__list">
+            <li>
+              <span class="exp__name">横板战斗游戏</span>
+              <span class="exp__meta">2025 – 2026</span>
+              <span class="exp__desc">自学 Godot 独立完成，有完整的游戏循环。缺陷在于美术资源上的不足。</span>
+            </li>
+            <li>
+              <!-- 项目名和截图入口排在同一行 -->
+              <span class="exp__head">
+                <span class="exp__name">小程序游戏</span>
+                <!-- ★ 截图入口。
+                     没 JS 时它就是一个普通链接，点开能看到第一张图；
+                     有 JS 时被 gallery.js 接管，弹层展示全部。
+                     图片清单用 | 分隔，改这里就能加删。 -->
+                <a class="exp__shots" href="assets/img/game-1.jpg"
+                   data-gallery="assets/img/game-1.jpg|assets/img/game-2.jpg"
+                   data-gallery-title="小程序游戏 · 开发截图">
+                  查看开发截图<span class="exp__shots-count">2 张</span>
+                </a>
+              </span>
+              <span class="exp__meta">2026</span>
+              <span class="exp__desc">通过我制定项目结构与设计代码架构，配合 MCP + Agent 完整工作流，独自一人实现从美术资源到代码、以及音乐等杂项资源的制作，并完成整个闭环。</span>
+            </li>
+            <li>
+              <span class="exp__name">毕业设计</span>
+              <span class="exp__meta">进行中</span>
+              <span class="exp__desc">将自学游戏开发的经验应用到软件设计中，制作了基于 AI 的娱乐化教育软件。</span>
+            </li>
+            <li>
+              <span class="exp__name">交互式网页简历</span>
+              <span class="exp__meta">2026</span>
+              <span class="exp__desc">您现在看到的这个页面。原生 HTML / CSS / JavaScript，无框架无构建，通过 AI 辅助快速完成。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 4 屏 · 我能做什么
+       ------------------------------------------------------------
+       ★ 2026-10-15 新建，**内容待设计**，目前只有骨架。
+
+       起因：原本打算把「主修课程」和「其他能力」两个大类塞进身份卡。
+       实测身份卡会从 671px 涨到 981px，手机端统一缩放被压到 0.795
+       （正文 16px → 12.7px），740px 的手机还要屏内滚动。
+       超出预算 280px，代价太大，所以挪出来单独成屏。
+
+       TODO 候选素材（还没决定用哪些、怎么摆）：
+         · 主修课程 7 门 —— 数据库原理与应用 / 计算机网络 / 操作系统 /
+           软件工程 / Java 程序设计 / MySQL 数据库运维 / 网络安全基础
+         · 其他能力 —— GDScript / C# / Maya 建模 / PR / AE /
+           AI Agent 配置 / LoRA 训练 / Stable Diffusion / ComfyUI 工作流
+         · 技能分级 —— 见 content/persona.js 的「技能」段
+
+       ⚠️ 高度提醒：这一屏现在是全站最宽松的（约 200px），
+          但整站天花板是「我的经历」的 704px（手机端）。
+          加内容之前先看 README 的「高度预算表」。
+       ============================================================ -->
+  <section id="skills" class="section" data-label="我能做什么" aria-labelledby="skills-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">技能</p>
+        <h2 id="skills-title" class="section__title reveal">我能做什么</h2>
+        <p class="section__lead reveal">专业领域和拓展技能两块。<br>
+          <span style="font-size:var(--fs-sm);color:var(--c-text-mute)">点击区块可以展开。</span>
+        </p>
+      </div>
+
+      <!-- ★ 两块面板，直接复用「关于我」那套组件（.panels + .panel）。
+           两边共用的部分：静止只显示居中大标题，点开后标题缩到左上角、
+           详情淡入，点另一块能直接换过去。
+           不一样的只有一件事 —— 让位方向：
+             四块版  向对角让
+             两块版  向两侧让：宽屏左右，窄屏上下
+           全部写在 layout.css 的 .panels--duo 段，JS 不用改。
+
+           TODO 内容目前是占位符，等设计好再填。
+                候选素材见这一屏上面的注释。 -->
+      <div class="panels panels--duo">
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">专业领域</span>
+          <span class="panel__list">
+            <span class="panel__item">C / Java / Python 等主流编程语言，以及 MySQL 数据库应用</span>
+            <span class="panel__item">Godot / Unity 等开发引擎的应用</span>
+            <span class="panel__item">不同办公环境下的 Agent / MCP 配置</span>
+            <span class="panel__item">能独立完成完整项目的策划与开发</span>
+          </span>
+        </button>
+
+        <button class="panel reveal" type="button" aria-pressed="false">
+          <span class="panel__title">拓展技能</span>
+          <span class="panel__list">
+            <span class="panel__item">Maya 3D 建模（持中级建模师证）</span>
+            <span class="panel__item">PR / AE 等专业视频制作与剪辑软件</span>
+            <span class="panel__item">LoRA 训练 —— 能自己训练 AI 模型</span>
+            <span class="panel__item">Stable Diffusion / ComfyUI 等 AI 生图工具与工作流配置</span>
+            <span class="panel__item">项目策划、数值策划</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 5 屏 · 我的经历（实习 + 在校）
+       ------------------------------------------------------------
+       两块并排，桌面端两栏、手机端单列。
+       ============================================================ -->
+  <section id="experience" class="section" data-label="我的经历" aria-labelledby="experience-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">经历</p>
+        <h2 id="experience-title" class="section__title reveal">我的经历</h2>
+        <p class="section__lead reveal">实习和在校。</p>
+      </div>
+
+      <div class="exp">
+        <div class="exp__col reveal">
+          <h3 class="exp__title">实习经历</h3>
+          <ul class="exp__list">
+            <li>
+              <span class="exp__name">深圳梦方文化旅游有限公司 · 影视后期（实习）</span>
+              <span class="exp__meta">实习期间</span>
+              <span class="exp__desc">学习使用完全没接触过的 Lenx 软件，与 Maya 相结合进行影视后期灯光渲染。当时没有 AI 可依赖，完全靠自学和理解能力，在两个星期内快速上手工作内容，并且达到可以独立产出帧动画的水平。</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="exp__col reveal">
+          <h3 class="exp__title">在校经历</h3>
+          <ul class="exp__list">
+            <li>
+              <span class="exp__name">担任组织委员</span>
+              <span class="exp__desc">在校期间帮助校内师生多次组织跨专业活动，以及班级内部的小型活动。具备组织能力和执行能力。</span>
+            </li>
+            <li>
+              <span class="exp__name">担任宣传委员</span>
+              <span class="exp__desc">在校期间与校内各个组织对接，积极参与宣传校内活动，并且与学生对接和沟通，帮助校内学生和组织更好地完成交流工作。</span>
+            </li>
+            <li>
+              <span class="exp__name">担任社团执行部部长</span>
+              <span class="exp__desc">负责推进社团与校外组织的接洽，以及活动内容的策划。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 4 屏 · AI 分身
+       ============================================================ -->
+  <section id="avatar" class="section" data-label="AI 分身" aria-labelledby="avatar-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">AI 分身</p>
+        <h2 id="avatar-title" class="section__title reveal">问我一个小分身</h2>
+        <p class="section__lead reveal">
+          这是我的一个 AI 小分身，你可以尝试问问他一些问题。
+        </p>
+      </div>
+
+      <div class="reveal" style="display:flex;flex-wrap:wrap;gap:var(--sp-3)">
+        <button class="btn btn--primary" type="button" data-open-avatar>开始提问</button>
+      </div>
+
+      <p class="reveal" style="margin-top:var(--sp-5);font-size:var(--fs-xs);color:var(--c-text-mute)">
+        右下角那个圆按钮一直都在，随时可以点开。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       第 5 屏 · 联系方式
+       ============================================================ -->
+  <section id="contact" class="section" data-label="联系方式" aria-labelledby="contact-title">
+    <div class="section__inner">
+      <div class="section__head">
+        <p class="section__eyebrow reveal">联系方式</p>
+        <h2 id="contact-title" class="section__title reveal">聊聊？</h2>
+        <p class="section__lead reveal">点一下就能复制。想先问点什么的话，右下角的小分身随时在。</p>
+      </div>
+
+      <div class="contact">
+        <div class="contact-list">
+          <button class="contact-item reveal" type="button"
+                  data-copy="example@example.com" data-copy-label="邮箱">
+            <span class="contact-item__body">
+              <span class="contact-item__label">邮箱</span><br>
+              <span class="contact-item__value">example@example.com</span>
+            </span>
+            <span class="contact-item__hint">点击复制</span>
+          </button>
+
+          <button class="contact-item reveal" type="button"
+                  data-copy="13800000000" data-copy-label="微信号">
+            <span class="contact-item__body">
+              <span class="contact-item__label">微信</span><br>
+              <span class="contact-item__value">13800000000</span>
+            </span>
+            <span class="contact-item__hint">点击复制</span>
+          </button>
+
+          <button class="contact-item reveal" type="button"
+                  data-copy="13800000000" data-copy-label="电话">
+            <span class="contact-item__body">
+              <span class="contact-item__label">电话</span><br>
+              <span class="contact-item__value">13800000000</span>
+            </span>
+            <span class="contact-item__hint">点击复制</span>
+          </button>
+        </div>
+
+        <figure class="qr-box reveal">
+          <img src="assets/img/wechat-qr.jpg" alt="微信二维码" width="150">
+          <figcaption>微信扫码加我</figcaption>
+        </figure>
+      </div>
+
+      <footer class="site-footer reveal">
+        <p>
+          这个页面是手写的 —— 原生 HTML / CSS / JavaScript，没有框架，没有构建工具。
+          <span class="no-print">按 Ctrl+P 可以打印成一份干净的 PDF。</span>
+        </p>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     AI 分身：悬浮球 + 面板
+     ============================================================ -->
+<button id="avatar-ball" class="avatar-ball" type="button" aria-label="打开 AI 分身">
+  <!-- 内联 SVG 图标，不用 emoji -->
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+  </svg>
+</button>
+
+<aside id="avatar-panel" class="avatar-panel" data-open="false" aria-labelledby="avatar-panel-title">
+  <header class="avatar-panel__head">
+    <div>
+      <h2 id="avatar-panel-title" class="avatar-panel__title">小分身</h2>
+      <p class="avatar-panel__sub">关于示例用户，随便问</p>
+    </div>
+    <button id="avatar-close" class="avatar-panel__close" type="button" aria-label="关闭面板">✕</button>
+  </header>
+
+  <div id="chat-log" class="chat-log" role="log" aria-live="polite" aria-label="对话记录"></div>
+
+  <!-- 原先这里有一排快捷问题按钮（#quick-qs）。
+       它占一整行，手机上把聊天区挤得很紧，所以去掉了。
+       示例问题现在写在问候语里，见 avatar.js 的 sampleQuestions()。 -->
+
+  <form id="chat-form" class="chat-form">
+    <input id="chat-input" type="text" name="q" autocomplete="off"
+           placeholder="问点什么…" aria-label="输入你的问题">
+    <button class="btn btn--primary" type="submit">发送</button>
+  </form>
+
+  <p class="chat-note">AI 依据本人资料生成 · 拿不准的请直接问他本人</p>
+</aside>
+
+<!-- ============================================================
+     截图弹层
+     ------------------------------------------------------------
+     由 assets/js/gallery.js 控制。页面上任何带 data-gallery 的元素
+     点一下都会打开它，图片清单写在那个元素的 data-gallery 上（用 | 分隔）。
+
+     ★ 无 JS 时它永远不显示；那些元素退化成普通链接，仍然能看到第一张图。
+     ============================================================ -->
+<div id="gallery" class="gallery" role="dialog" aria-modal="true"
+     aria-labelledby="gallery-title" hidden>
+  <div class="gallery__backdrop" data-gallery-close></div>
+  <div class="gallery__panel">
+    <header class="gallery__head">
+      <h2 id="gallery-title" class="gallery__title"></h2>
+      <button class="gallery__close" type="button" data-gallery-close aria-label="关闭截图">✕</button>
+    </header>
+    <div class="gallery__list"></div>
+  </div>
+</div>
+
+<div id="toast-stack" class="toast-stack"></div>
+
+<!-- ============================================================
+     自检：脚本没跑起来的话，明确告诉用户，而不是安静地少一半
+     ------------------------------------------------------------
+     这一段刻意写成「普通脚本」而不是模块，就是为了在任何情况下
+     都能执行。defer 脚本会在 load 之前跑完，所以到 load 时如果
+     Resume.app 还不存在，说明确实出了问题。
+     ============================================================ -->
+<script>
+window.addEventListener('load', function () {
+  if (window.Resume && window.Resume.app) return;
+
+  var tip = document.createElement('div');
+  tip.className = 'protocol-warning';
+  tip.setAttribute('role', 'alert');
+  tip.innerHTML =
+    '<strong>脚本没有加载起来。</strong>' +
+    '<p>页面的排版是好的，但所有交互都没生效 —— 说明 <code>assets/js/</code> 下的脚本没跑起来。</p>' +
+    '<p>常见原因：文件被移动过、或直接打开了某个子文件。请确认你打开的是项目根目录下的 ' +
+    '<code>index.html</code>，并且 <code>assets/</code> 与 <code>content/</code> 两个文件夹和它同级。</p>';
+  document.body.prepend(tip);
+});
+</script>
+
+</body>
+</html>
